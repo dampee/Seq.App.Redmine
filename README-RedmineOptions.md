@@ -1,42 +1,35 @@
-Redmine App - Extra Properties
+# Seq.App.Redmine
 
-This document describes the additional Redmine-related settings and how they are used by the app.
+Redmine Issue Creator for Seq
 
-Settings added
+This package contains a Seq app that creates Redmine issues from Seq events.
 
-- `StatusId` (optional): Numeric status ID to set on the created issue.
-- `CategoryId` (optional): Numeric category ID to set on the created issue.
-- `FixedVersionId` (optional): Numeric target/fixed version ID.
-- `AssignedToId` (optional): Numeric user ID to assign the issue to.
-- `ParentIssueId` (optional): Numeric parent issue ID.
-- `WatcherUserIdsCsv` (optional): Comma-separated list of numeric user IDs to add as watchers. Example: `12,34,56`.
-- `IsPrivate` (optional): `true` or `false` to mark the issue as private.
-- `EstimatedHours` (optional): Decimal number of estimated hours.
-- `CustomFields` (optional): Allows configuring Redmine custom fields. Two formats supported:
-  - JSON: Provide a JSON array or object. Example: `[{"id":1,"value":"abc"},{"id":2,"value":123}]` or `{"id":1,"value":"abc"}`.
-  - CSV style: `id:value` pairs separated by commas. Example: `1:abc,2:123,3:true`.
+## Usage
 
-Behavior
+Configure the app with the following settings (available in the app settings when adding the app in Seq):
 
-- Optional fields are only included in the issue payload when set.
-- `CustomFields` parsing will coerce numeric and boolean values when using CSV style.
-- If `CustomFields` is empty or cannot be parsed, a default set is used:
+- `RedmineUrl` (required): Base URL of your Redmine instance, e.g. `https://redmine.example.com`
+- `ApiKey` (required): Your Redmine API key
+- `ProjectId` (required): Redmine project id or identifier
+- `TrackerId` (optional): Tracker id to use (default: 1)
+- `PriorityId` (optional): Priority id to use (default: 4)
+- `SeqInstanceUrl` (optional): Base URL of your Seq server; used to construct a link back to the original event from the created Redmine issue.
+- `CustomFields` (optional): Configure custom fields using JSON array or CSV style (`1:abc,2:123`). If omitted, the app sets defaults:
   - custom field `1` -> Seq event id
   - custom field `2` -> event level
 
-Examples
+## Description content
 
-- Set watchers and assign the issue:
-  - `WatcherUserIdsCsv`: `12,34`
-  - `AssignedToId`: `78`
+When no `DescriptionTemplate` is provided, the app will include in the Redmine issue description:
 
-- Use JSON custom fields:
-  - `CustomFields`: `[{"id":5,"value":"customer-123"},{"id":6,"value":45}]`
+1. A link to the original Seq event (if `SeqInstanceUrl` is set), otherwise the event ID and timestamp.
+2. The full exception stack trace (if an exception is present on the event).
+3. All event properties as a list of key/value pairs.
 
-- Use CSV custom fields:
-  - `CustomFields`: `5:customer-123,6:45`
+## Packaging
 
-Notes
+This README is included in the NuGet package and will be displayed on nuget.org when the package is published.
 
-- The app will only include fields in the payload that are configured; unset optional settings will be omitted from the request.
-- Consider configuring custom field IDs to match your Redmine project's custom fields.
+## License
+
+Apache-2.0
