@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36429.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seq.App.Redmine", "Seq.App.Redmine\Seq.App.Redmine.csproj", "{A19FA0F6-2538-3577-CB1B-720BB08123E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarness", "TestHarness\TestHarness.csproj", "{0BD1EBD1-9CF4-63A2-F843-BBC8BF161C8E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A19FA0F6-2538-3577-CB1B-720BB08123E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A19FA0F6-2538-3577-CB1B-720BB08123E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A19FA0F6-2538-3577-CB1B-720BB08123E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A19FA0F6-2538-3577-CB1B-720BB08123E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD1EBD1-9CF4-63A2-F843-BBC8BF161C8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD1EBD1-9CF4-63A2-F843-BBC8BF161C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD1EBD1-9CF4-63A2-F843-BBC8BF161C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD1EBD1-9CF4-63A2-F843-BBC8BF161C8E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0FC1AE5D-35B5-4C27-BC8E-D6500BCB1786}
+	EndGlobalSection
+EndGlobal

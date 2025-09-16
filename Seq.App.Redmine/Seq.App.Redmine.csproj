@@ -10,7 +10,7 @@
     <Title>Redmine Issue Creator for Seq</Title>
     <Description>A Seq app that creates Redmine issues from Seq events</Description>
     <Authors>Seq.App.Redmine</Authors>
-    <PackageTags>seq;logging;redmine;issues</PackageTags>
+    <PackageTags>seq;logging;redmine;issues;seq-app</PackageTags>
     <RepositoryUrl>https://github.com/dampee/Seq.App.Redmine</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
