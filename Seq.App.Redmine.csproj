@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Seq.App.Redmine</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Title>Redmine Issue Creator for Seq</Title>
+    <Description>A Seq app that creates Redmine issues from Seq events</Description>
+    <Authors>Seq.App.Redmine</Authors>
+    <PackageTags>seq;logging;redmine;issues</PackageTags>
+    <RepositoryUrl>https://github.com/dampee/Seq.App.Redmine</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Seq.Apps" Version="2023.4.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+</Project>

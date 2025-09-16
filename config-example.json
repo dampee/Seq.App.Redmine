@@ -1,0 +1,9 @@
+{
+  "RedmineUrl": "https://your-redmine-instance.com",
+  "ApiKey": "your-api-key-here",
+  "ProjectId": "your-project-id",
+  "TrackerId": 1,
+  "PriorityId": 4,
+  "MinimumLevel": "Error",
+  "SubjectTemplate": "[{Level}] {MessageTemplate}"
+}
