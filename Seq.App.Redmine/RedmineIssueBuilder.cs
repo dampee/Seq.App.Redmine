@@ -21,9 +21,13 @@ public static class RedmineIssueBuilder
         issueObj["tracker_id"] = options.TrackerId;
         issueObj["priority_id"] = options.PriorityId;
 
+        // Use rendered message when available, fall back to message template
+        var renderedMessage = evt.Data.RenderedMessage ?? evt.Data.MessageTemplate ?? string.Empty;
+
         var subject = (options.SubjectTemplate ?? "[{Level}] {MessageTemplate}")
             .Replace("{Level}", evt.Data.Level.ToString())
-            .Replace("{MessageTemplate}", evt.Data.MessageTemplate ?? "")
+            .Replace("{MessageTemplate}", renderedMessage)
+            .Replace("{RenderedMessage}", renderedMessage)
             .Replace("{Exception}", evt.Data.Exception?.GetType().Name ?? "");
 
         issueObj["subject"] = subject.Length > 255 ? subject.Substring(0, 252) + "..." : subject;
