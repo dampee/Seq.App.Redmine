@@ -1,6 +1,7 @@
 using Seq.Apps;
 using Seq.Apps.LogEvents;
 using System.Text;
+using System;
 
 namespace Seq.App.Redmine;
 
@@ -23,36 +24,40 @@ public class IssueContentBuilder
         // 1) Link to original event
         if (!string.IsNullOrWhiteSpace(_seqBaseUrl))
         {
-            // Seq event link format: {base}/#/events?filter=@Id%20%3D%20"{id}" or direct event page depending on Seq version.
-            // Use simple link to events filtered by id for compatibility.
-            var link = $"{_seqBaseUrl}/#/events?filter=@Id%20%3D%20\"{_evt.Id}\"";
-            description.AppendLine($"**Original Event:** {link}");
+            // Build a URL-encoded filter for the Seq events page to locate this event by id
+            var filter = Uri.EscapeDataString($"@Id = \"{_evt.Id}\"");
+            var link = $"{_seqBaseUrl}/#/events?filter={filter}";
+            // Render as a markdown-style link - Redmine supports Markdown/Textile depending on configuration,
+            // this is broadly compatible as plain link as well.
+            description.AppendLine($"**Original Event:** [View in Seq]({link})");
+            description.AppendLine();
         }
         else
         {
             description.AppendLine($"**Seq Event ID:** {_evt.Id}");
             description.AppendLine($"**Timestamp:** {_evt.Timestamp:yyyy-MM-dd HH:mm:ss} UTC");
+            description.AppendLine();
         }
 
         // 2) Stack trace if exception
         if (eventData.Exception != null)
         {
-            description.AppendLine();
             description.AppendLine("**Exception:**");
             description.AppendLine("```");
             description.AppendLine(eventData.Exception.ToString());
             description.AppendLine("```");
+            description.AppendLine();
         }
 
         // 3) All properties
         if (eventData.Properties?.Count > 0)
         {
-            description.AppendLine();
             description.AppendLine("**Properties:**");
             foreach (var prop in eventData.Properties)
             {
                 description.AppendLine($"- **{prop.Key}:** {prop.Value}");
             }
+            description.AppendLine();
         }
 
         return description.ToString();

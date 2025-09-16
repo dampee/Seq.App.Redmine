@@ -1,4 +1,5 @@
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
 using System.Linq;
@@ -7,9 +8,9 @@ namespace Seq.App.Redmine;
 
 public static class RedmineIssueBuilder
 {
-    public static JObject BuildIssueJObject(RedmineOptions options, Seq.Apps.Event<LogEventData> evt)
+    public static JsonObject BuildIssueJObject(RedmineOptions options, Seq.Apps.Event<LogEventData> evt)
     {
-        var issueObj = new JObject();
+        var issueObj = new JsonObject();
 
         // project_id can be numeric or identifier
         if (!string.IsNullOrWhiteSpace(options.ProjectId) && int.TryParse(options.ProjectId, out var projId))
@@ -63,7 +64,7 @@ public static class RedmineIssueBuilder
 
             if (ids.Length > 0)
             {
-                var arr = new JArray();
+                var arr = new JsonArray();
                 foreach (var id in ids)
                     arr.Add(id);
                 issueObj["watcher_user_ids"] = arr;
@@ -71,7 +72,7 @@ public static class RedmineIssueBuilder
         }
 
         // custom_fields
-        JArray customFieldsArray;
+        JsonArray customFieldsArray;
         if (!string.IsNullOrWhiteSpace(options.CustomFields))
         {
             var s = options.CustomFields.Trim();
@@ -79,17 +80,17 @@ public static class RedmineIssueBuilder
             {
                 if (s.StartsWith("[") || s.StartsWith("{"))
                 {
-                    var parsed = JToken.Parse(s);
-                    if (parsed is JArray arr)
+                    var parsed = JsonNode.Parse(s);
+                    if (parsed is JsonArray arr)
                         customFieldsArray = arr;
-                    else if (parsed is JObject obj)
-                        customFieldsArray = new JArray(obj);
+                    else if (parsed is JsonObject obj)
+                        customFieldsArray = new JsonArray(obj);
                     else
-                        customFieldsArray = new JArray();
+                        customFieldsArray = new JsonArray();
                 }
                 else
                 {
-                    customFieldsArray = new JArray();
+                    customFieldsArray = new JsonArray();
                     var parts = s.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                     foreach (var part in parts)
                     {
@@ -97,41 +98,46 @@ public static class RedmineIssueBuilder
                         if (kv.Length == 2 && int.TryParse(kv[0].Trim(), out var id))
                         {
                             var val = kv[1].Trim();
-                            JToken valToken;
+                            JsonNode? valNode;
                             if (int.TryParse(val, out var ival))
-                                valToken = ival;
+                                valNode = JsonValue.Create(ival);
                             else if (decimal.TryParse(val, out var dval))
-                                valToken = dval;
+                                valNode = JsonValue.Create(dval);
                             else if (bool.TryParse(val, out var bval))
-                                valToken = bval;
+                                valNode = JsonValue.Create(bval);
                             else
-                                valToken = val;
+                                valNode = JsonValue.Create(val);
 
-                            customFieldsArray.Add(new JObject { ["id"] = id, ["value"] = valToken });
+                            var obj = new JsonObject
+                            {
+                                ["id"] = id,
+                                ["value"] = valNode
+                            };
+                            customFieldsArray.Add(obj);
                         }
                     }
                 }
             }
             catch
             {
-                customFieldsArray = new JArray();
+                customFieldsArray = new JsonArray();
             }
 
             if (customFieldsArray.Count == 0)
             {
-                customFieldsArray = new JArray
+                customFieldsArray = new JsonArray
                 {
-                    new JObject { ["id"] = 1, ["value"] = evt.Id },
-                    new JObject { ["id"] = 2, ["value"] = evt.Data.Level.ToString() }
+                    new JsonObject { ["id"] = 1, ["value"] = evt.Id },
+                    new JsonObject { ["id"] = 2, ["value"] = evt.Data.Level.ToString() }
                 };
             }
         }
         else
         {
-            customFieldsArray = new JArray
+            customFieldsArray = new JsonArray
             {
-                new JObject { ["id"] = 1, ["value"] = evt.Id },
-                new JObject { ["id"] = 2, ["value"] = evt.Data.Level.ToString() }
+                new JsonObject { ["id"] = 1, ["value"] = evt.Id },
+                new JsonObject { ["id"] = 2, ["value"] = evt.Data.Level.ToString() }
             };
         }
 

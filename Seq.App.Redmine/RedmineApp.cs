@@ -1,5 +1,5 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
 using System.Text;
@@ -119,6 +119,7 @@ public class RedmineApp : SeqApp, Seq.Apps.ISubscribeToAsync<LogEventData>
     public string? DescriptionTemplate { get; set; }
 
     private static readonly HttpClient HttpClient = new();
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = null, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
 
     public async Task OnAsync(Event<LogEventData> evt)
     {
@@ -166,10 +167,10 @@ public class RedmineApp : SeqApp, Seq.Apps.ISubscribeToAsync<LogEventData>
             DescriptionTemplate = DescriptionTemplate
         };
 
-        var issue = RedmineIssueBuilder.BuildIssueJObject(options, evt);
-        var root = new JObject { ["issue"] = issue };
+        var issueNode = RedmineIssueBuilder.BuildIssueJObject(options, evt);
+        var root = new JsonObject { ["issue"] = issueNode };
 
-        var json = JsonConvert.SerializeObject(root);
+        var json = JsonSerializer.Serialize(root, JsonOptions);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var requestUrl = $"{RedmineUrl?.TrimEnd('/')}/issues.json";
@@ -183,9 +184,10 @@ public class RedmineApp : SeqApp, Seq.Apps.ISubscribeToAsync<LogEventData>
         if (response.IsSuccessStatusCode)
         {
             var responseContent = await response.Content.ReadAsStringAsync();
-            var createdIssue = JsonConvert.DeserializeObject<dynamic>(responseContent);
+            var createdNode = JsonNode.Parse(responseContent);
+            var issueId = createdNode? ["issue"]? ["id"]?.GetValue<int?>();
             Log.Information("Created Redmine issue #{IssueId} for event {EventId}",
-                createdIssue?.issue?.id, evt.Id);
+                issueId, evt.Id);
         }
         else
         {
